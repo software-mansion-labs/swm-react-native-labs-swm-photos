@@ -1,12 +1,15 @@
 import { colors } from "@/config/colors";
+import { FONT_MEDIUM } from "@/config/constants";
+import { scaledPixels } from "@/hooks/useScale";
 import { PropsWithChildren, useCallback } from "react";
 import {
   GestureResponderEvent,
-  Pressable,
+  Platform,
   PressableProps,
   StyleProp,
   StyleSheet,
   Text,
+  TouchableOpacity,
   ViewStyle,
 } from "react-native";
 import Animated, {
@@ -17,13 +20,23 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+/**
+ * Helper definitions
+ */
+
+// Button props definition
 type ButtonProps = PressableProps &
   PropsWithChildren & {
     style?: StyleProp<ViewStyle>;
     invert?: boolean;
   };
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+// Animated component definition
+const AnimatedPressable = Animated.createAnimatedComponent(TouchableOpacity);
+
+/**
+ * Button component
+ */
 
 export const Button = ({
   style,
@@ -62,7 +75,28 @@ export const Button = ({
     opacity: pulseTransparency.value,
   }));
 
+  // Special case - TV
+  // - (Android TV, FireTV) Using Animated style directly on TouchableOpacity causes some problems with focusing after clicking the button
+  //                        The code below is a workaround for the mentioned issue
+  if (Platform.isTV) {
+    return (
+      // @ts-ignore
+      <TouchableOpacity
+        onPress={pressWrapper}
+        {...props}
+        style={{ width: "100%" }}
+      >
+        <Animated.View style={[styles.button, animatedBackground, style]}>
+          <Text style={[styles.text, invert && styles.invertColor]}>
+            {children}
+          </Text>
+        </Animated.View>
+      </TouchableOpacity>
+    );
+  }
+
   return (
+    // @ts-ignore
     <AnimatedPressable
       style={[styles.button, animatedBackground, style]}
       onPress={pressWrapper}
@@ -75,12 +109,12 @@ export const Button = ({
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.blue,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: scaledPixels(20),
+    paddingHorizontal: scaledPixels(18),
+    borderRadius: scaledPixels(10),
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
@@ -90,8 +124,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: colors.white,
-    fontSize: 16,
-    fontFamily: "Aeonik-Medium",
+    fontSize: scaledPixels(20),
+    fontFamily: FONT_MEDIUM,
     textAlign: "center",
   },
 });

@@ -1,4 +1,3 @@
-import { useMeasureImageLoadTime } from "@/utils/useMeasureImageLoadTime";
 import { Image as ExpoImage } from "expo-image";
 import { memo } from "react";
 import { StyleSheet } from "react-native";
@@ -8,8 +7,6 @@ export const ExpoImageComponent = memo(function ExpoImageComponent({
   uri,
   itemSize,
 }: ImageViewProps) {
-  const { onLoadEnd, onLoadStart } = useMeasureImageLoadTime("ExpoImage");
-
   return (
     <ExpoImage
       source={{ uri }}
@@ -19,8 +16,6 @@ export const ExpoImageComponent = memo(function ExpoImageComponent({
       recyclingKey={uri}
       transition={0}
       style={[styles.image, { width: itemSize, height: itemSize }]}
-      onLoadStart={onLoadStart}
-      onLoadEnd={onLoadEnd}
     />
   );
 });

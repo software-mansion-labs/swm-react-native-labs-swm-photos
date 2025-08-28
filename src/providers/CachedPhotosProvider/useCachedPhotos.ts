@@ -1,8 +1,8 @@
+import { calculateNewCachePhoto } from "@/utils/calculateNewCachePhoto/calculateNewCachePhoto";
 import logPerformance from "@/utils/logPerformance";
-import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
-import pLimit from "p-limit";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGalleryUISettings } from "../GalleryUISettingsProvider";
+import { useMediaLibraryPhotos } from "../MediaLibraryPhotosProvider";
 import {
   CachedPhotoType,
   clearCache,
@@ -10,14 +10,20 @@ import {
   loadAllPhotosFromCache,
   setPhotoInCache,
 } from "./cache-service";
-import { PixelRatio } from "react-native";
-import { useMediaLibraryPhotos } from "../MediaLibraryPhotosProvider";
+import { useScreenDimensions } from "../ScreenDimensionsProvider";
+import { IS_WIDE_SCREEN } from "@/config/constants";
 
 /**
  * Upon scenario that we have a lot of photos to process (e.g. when resetting the cache),
  * we want to process them in batches in order to retain some UI responsiveness.
  */
 const PROCESSING_BATCH_SIZE_LIMIT = 25;
+
+/**
+ * Helper definitions - loading state
+ *
+ * "IDLE" works as a default state, which is neither running nor completed
+ */
 
 export type CachedPhotosLoadingState =
   | "IDLE"
@@ -26,13 +32,24 @@ export type CachedPhotosLoadingState =
   | "CALCULATING"
   | "COMPLETED";
 
+// Helper function - detect completed loading
+export function isCompleted(state: CachedPhotosLoadingState) {
+  return state === "RESTORED_FROM_CACHE" || state === "COMPLETED";
+}
+
+// Helper function - detect active loading
+export function isLoading(state: CachedPhotosLoadingState) {
+  return state === "RESTORING_FROM_CACHE" || state === "CALCULATING";
+}
+
 /**
  * Queries the cache for photos based on the UI settings.
  * Ensures we have all the photos coming from {@link useMediaLibraryPhotos} properly processed and stored in the cache.
  */
 export const useCachedPhotos = () => {
+  const { dimensions } = useScreenDimensions();
   const {
-    singleImageSize,
+    numberOfColumns,
     stateRestorationStatus: galleryUISettingsStateRestorationStatus,
   } = useGalleryUISettings();
   const {
@@ -49,7 +66,39 @@ export const useCachedPhotos = () => {
     cachedPhotosLoadingState: "IDLE",
   });
 
+  const relevantDimension = IS_WIDE_SCREEN
+    ? dimensions.width
+    : Math.min(dimensions.width, dimensions.height);
+
+  /**
+   * Calculate estimated target image size based on screen dimensions
+   * We use a rough heuristic, since neither overestimating nor underestimating by 10 pixels hurts us
+   */
+  const targetImageSize = useMemo(
+    () => relevantDimension / numberOfColumns,
+    [relevantDimension, numberOfColumns],
+  );
+
   const calculateCachedPhotos = useCallback(async () => {
+    /**
+     * useWindowDimensions hook sometimes might cause 2 or 3 rerenders in a short time, including the initialization stage
+     * That's why we need to be careful and check for other ongoing calculations
+     */
+    if (
+      state.cachedPhotosLoadingState === "CALCULATING" ||
+      state.cachedPhotosLoadingState === "RESTORING_FROM_CACHE"
+    ) {
+      logger.cachedPhotos.warn(
+        "❌ Calculate cached photos is already in progress, skipping",
+      );
+      return;
+    }
+
+    setState({
+      cachedPhotos: [],
+      cachedPhotosLoadingState: "CALCULATING",
+    });
+
     await logPerformance(async () => {
       let processedPhotosCount = 0;
       const photosCountToProcess = mediaLibraryPhotos.length;
@@ -74,7 +123,7 @@ export const useCachedPhotos = () => {
 
         const newCachedPhotosBatch = await Promise.all(
           nextPhotosBatch.map((photo) =>
-            generateCachedPhoto(photo.uri, singleImageSize),
+            generateCachedPhoto(photo.uri, targetImageSize),
           ),
         );
 
@@ -98,7 +147,7 @@ export const useCachedPhotos = () => {
         `✅ Calculated ${processedPhotos.length} cached photos`,
       );
     }, ["calculateCachedPhotos"]);
-  }, [mediaLibraryPhotos, singleImageSize]);
+  }, [mediaLibraryPhotos, targetImageSize, state.cachedPhotosLoadingState]);
 
   const recalculateCachedPhotos = useCallback(async () => {
     if (
@@ -113,10 +162,6 @@ export const useCachedPhotos = () => {
 
     logger.cachedPhotos.info("🔄 Recalculating cached photos");
     await clearCache();
-    setState({
-      cachedPhotos: [],
-      cachedPhotosLoadingState: "CALCULATING",
-    });
 
     await calculateCachedPhotos();
   }, [state.cachedPhotosLoadingState, calculateCachedPhotos]);
@@ -145,7 +190,7 @@ export const useCachedPhotos = () => {
     }
 
     logger.cachedPhotos.info(
-      `🔄 Restoring cached photos from disk (expects ${mediaLibraryPhotos.length} photos of size ${singleImageSize.toFixed(2)})`,
+      `🔄 Restoring cached photos from disk (expects ${mediaLibraryPhotos.length} photos of size ${targetImageSize.toFixed(2)})`,
     );
 
     setState({
@@ -155,7 +200,7 @@ export const useCachedPhotos = () => {
 
     const cachedPhotos = loadAllPhotosFromCache(
       mediaLibraryPhotos,
-      singleImageSize,
+      targetImageSize,
     );
 
     if (cachedPhotos.length === 0) {
@@ -183,7 +228,7 @@ export const useCachedPhotos = () => {
   }, [
     galleryUISettingsStateRestorationStatus,
     mediaLibraryStateRestorationStatus,
-    singleImageSize,
+    targetImageSize,
     mediaLibraryLoadingState,
     mediaLibraryPhotos,
     state.cachedPhotosLoadingState,
@@ -207,7 +252,7 @@ export const useCachedPhotos = () => {
     state.cachedPhotos.length,
     mediaLibraryLoadingState,
     mediaLibraryPhotos.length,
-    singleImageSize,
+    targetImageSize,
     calculateCachedPhotos,
   ]);
 
@@ -244,42 +289,3 @@ const generateCachedPhoto = async (
 
   return cachedPhoto;
 };
-
-/**
- * This function does the actual cache calculation for a given photo.
- * It's limited to {@link CACHE_CALCULATION_PARALLELISM_LIMIT} photos at a time.
- */
-
-const calculateNewCachePhoto = async (
-  photoUri: string,
-  mipmapWidth: number,
-) => {
-  return cacheCalculationLimiter(async () => {
-    const manipulatorContext = ImageManipulator.manipulate(photoUri);
-    manipulatorContext.resize({
-      /**
-       * {@link ImageManipulator.resize} expects the width in pixels (px) and not layout size (dp).
-       */
-      width: PixelRatio.getPixelSizeForLayoutSize(mipmapWidth),
-    });
-
-    const optimizedImage = await manipulatorContext.renderAsync();
-    const result = await optimizedImage.saveAsync({
-      format: SaveFormat.JPEG,
-      compress: 0.8,
-    });
-    optimizedImage.release();
-
-    return result;
-  });
-};
-
-/**
- * Determines how many jobs will be executed in parallel.
- */
-const CACHE_CALCULATION_PARALLELISM_LIMIT = 30;
-
-/**
- * Limiter instance for cache calculations
- */
-const cacheCalculationLimiter = pLimit(CACHE_CALCULATION_PARALLELISM_LIMIT);

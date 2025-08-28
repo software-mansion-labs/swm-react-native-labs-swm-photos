@@ -1,6 +1,8 @@
 import { colors } from "@/config/colors";
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { scaledPixels } from "@/hooks/useScale";
+import { FONT_REGULAR } from "@/config/constants";
 
 type DelayedContentRendererProps = PropsWithChildren<{
   delaySeconds?: number;
@@ -45,9 +47,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   countdownText: {
-    fontSize: 24,
+    fontSize: scaledPixels(24),
     fontWeight: "bold",
     color: colors.blue,
-    fontFamily: "Aeonik-Regular",
+    fontFamily: FONT_REGULAR,
   },
 });

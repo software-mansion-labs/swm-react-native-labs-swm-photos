@@ -1,13 +1,9 @@
+import { MEDIA_LIBRARY_PHOTOS_LIMIT } from "@/config/config";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import logPerformance from "@/utils/logPerformance";
 import * as MediaLibrary from "expo-media-library";
 import { useCallback, useEffect, useRef } from "react";
 import { Platform } from "react-native";
-
-/**
- * Determines how many photos at max will be loaded from MediaLibrary
- */
-const MEDIA_LIBRARY_PHOTOS_LIMIT = Infinity;
 
 /**
  * Determines how many MediaLibrary photos will be loaded in one batch.
@@ -129,7 +125,7 @@ export const useMediaLibraryPhotos = () => {
             first: LOAD_BATCH_SIZE,
             after: endCursor,
             mediaType: "photo",
-            sortBy: [["modificationTime", true]],
+            sortBy: [["creationTime", false]],
           });
 
           const newAssets = batch.assets.map(({ uri }) => ({ uri }));

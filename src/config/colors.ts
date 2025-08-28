@@ -1,3 +1,4 @@
+// A common color preset for the app
 export const colors = {
   // grayscale
   black: "#141414",

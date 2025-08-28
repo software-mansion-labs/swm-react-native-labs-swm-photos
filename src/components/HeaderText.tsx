@@ -1,6 +1,8 @@
 import { colors } from "@/config/colors";
 import { PropsWithChildren } from "react";
 import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
+import { scaledPixels } from "@/hooks/useScale";
+import { FONT_BOLD } from "@/config/constants";
 
 type HeaderTextProps = PropsWithChildren & {
   style?: StyleProp<TextStyle>;
@@ -12,7 +14,7 @@ export const HeaderText = ({
   style,
   children,
   invert,
-  size = 20,
+  size = scaledPixels(20),
 }: HeaderTextProps) => {
   return (
     <Text
@@ -31,8 +33,8 @@ export const HeaderText = ({
 const styles = StyleSheet.create({
   text: {
     color: colors.blue,
-    fontFamily: "Aeonik-Bold",
-    marginBottom: 4,
+    fontFamily: FONT_BOLD,
+    marginBottom: scaledPixels(4),
     textAlign: "center",
   },
   invertColor: {

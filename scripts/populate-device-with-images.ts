@@ -244,7 +244,8 @@ async function getConnectedPhysicalIosDevices(): Promise<Device[]> {
       if (
         line.includes("iPhone") ||
         line.includes("iPad") ||
-        line.includes("iPod")
+        line.includes("iPod") ||
+        line.includes("Apple TV")
       ) {
         // Parse the actual devicectl output format
         // Example: "Szczepan Posępny   00008110-001A098E1A2A801E.coredevice.local   41048927-C861-5A6C-B721-7D2C55FA4C76   available (paired)   iPhone14,4"
