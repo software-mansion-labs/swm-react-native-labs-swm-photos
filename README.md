@@ -41,16 +41,10 @@ This repository is given to you in chapters, each chapter being hosted on a diff
    - Update `EXPO_BUNDLE_IDENTIFIER` with your unique identifier (e.g., `com.swmansion.photos.<SOME_SUFFIX>`)
 4. Run the project using `bun android`, `bun ios`, `bun tvos`, `bun androidtv` or `bun web`
    - This command builds the `Release` version of the app on respective platform
-<<<<<<< HEAD
-<<<<<<< HEAD
    - Ensure you have the desired platform available on your machine (e.g. tvOS simulator or AndroidTV device)
 5. (Optional) reconfigure the app to launch only the Photos gallery screen by tweaking `EXPO_PUBLIC_LAUNCH_GALLERY_ON_START` env variable.
 6. (Optional) seed the device with images, see [Photos seed](#photos-seed) section
-=======
-=======
->>>>>>> 0b654722dee5f67a3f2b581a069811ef185c1ad7
    - Ensure you have the desired platform available on your machine (either use `Xcode` to install `tvOS` simulator and `Android Studio` to install `AndroidTV` emulator or connect the physical device)
-5. (Optional) seed the device with images, see [Photos seed](#photos-seed) section
 
 > [!NOTE]
 > If you're having problem with seeing the photos that are available on the photo, please restart the app.
@@ -68,10 +62,6 @@ This repository is given to you in chapters, each chapter being hosted on a diff
 
 > [!NOTE]
 > Running release commands will trigger native rebuild automatically, so there's no need to prebuild the native project.
-<<<<<<< HEAD
->>>>>>> d0b82bce8c8b556476d76f9c17b1194cf0da49ad
-=======
->>>>>>> 0b654722dee5f67a3f2b581a069811ef185c1ad7
 
 ## Performance measurements
 
