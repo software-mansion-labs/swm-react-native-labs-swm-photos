@@ -2,6 +2,7 @@ import { colors } from "@/config/colors";
 import { Image } from "expo-image";
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { scaledPixels } from "@/hooks/useScale";
 
 export function Logo() {
   return (
@@ -18,11 +19,11 @@ export function Logo() {
 const styles = StyleSheet.create({
   logoContainer: {
     backgroundColor: colors.blue,
-    borderRadius: 100,
-    padding: 16,
+    borderRadius: scaledPixels(100),
+    padding: scaledPixels(20),
   },
   logo: {
-    height: 80,
-    width: 80,
+    height: scaledPixels(88),
+    width: scaledPixels(88),
   },
 });

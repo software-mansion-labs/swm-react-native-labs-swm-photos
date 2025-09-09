@@ -12,6 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Defs, Rect } from "react-native-svg";
 import { PlaceholderProps } from "./types";
+import { scaledPixels } from "@/hooks/useScale";
 
 const MARGIN = 1;
 
@@ -68,7 +69,7 @@ export const PlaceholderSkeleton = ({
 const styles = StyleSheet.create({
   skeleton: {
     backgroundColor: colors.blue,
-    borderRadius: 4,
+    borderRadius: scaledPixels(4),
     margin: MARGIN,
     alignItems: "center",
     justifyContent: "center",

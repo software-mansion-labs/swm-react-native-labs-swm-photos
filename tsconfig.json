@@ -2,6 +2,7 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "lib": ["dom", "esnext"],
     "paths": {
       "@/assets/*": [
         "./assets/*"
@@ -12,6 +13,7 @@
     }
   },
   "include": [
+    "assets",
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",

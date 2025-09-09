@@ -8,7 +8,8 @@
 
 This repository is given to you in chapters, each chapter being hosted on a different branch:
 
-1. [SWM React Native Labs #1: image list in minutes](https://github.com/software-mansion-labs/swm-react-native-labs-swm-photos/tree/episode-1)
+1. [Building Apple & Google Photos Clone in React Native #1 : image list](https://github.com/software-mansion-labs/swm-react-native-labs-swm-photos/tree/episode-1)
+2. [Building Apple & Google Photos Clone in React Native #2 : multiplatform](https://github.com/software-mansion-labs/swm-react-native-labs-swm-photos/tree/episode-2)
 
 ## Project structure
 
@@ -16,33 +17,53 @@ This repository is given to you in chapters, each chapter being hosted on a diff
 .
 ├── <a href="./scripts">scripts/</a> # utility scripts for the project
 ├── <a href="./assets">assets/</a> # static assets used in the app (images and fonts)
-
 ├── <a href="./src">src/</a> # mobile application source code
 │   ├── <a href="./src/app">app/</a> # app routing
-│   │   ├── <a href="./src/app/settings.tsx">settings.tsx</a> # App settings screen
-│   │   ├── <a href="./src/app/photos-gallery.tsx">photos-gallery.tsx</a> # Main photos gallery view
-│   │   └── <a href="./src/app/list-scenarios">list-scenarios/</a> # Various list implementation demos
+│   │   ├── <a href="./src/app/index.tsx">index.tsx</a> # Main app entry point
+│   │   └── <a href="./src/app/settings.tsx">settings.tsx</a> # App settings screentsx</a> # React Native Image in ScrollView demo
 │   ├── <a href="./src/components">components/</a> # reusable components
-│   ├── <a href="./src/hooks">hooks/</a>
-│   │   └── <a href="./src/hooks/usePersistedState.ts">usePersistedState</a> # A hook that persists state to disk and restores it on mount, used for saving user preferences and app state
-
+│   ├── <a href="./src/config">config/</a> # Configuration files
+│   ├── <a href="./src/hooks">hooks/</a> # Custom React hooks
 │   ├── <a href="./src/providers">providers/</a> # app-wide state and data providers
-│   │   ├── <a href="./src/providers/MediaLibraryPhotosProvider">MediaLibraryPhotosProvider</a> # Loads and manages access to the device's photo library, including permissions and photo data
-│   │   ├── <a href="./src/providers/CachedPhotosProvider">CachedPhotosProvider</a> # Handles optimized (cached/resized) versions of photos for fast gallery rendering and efficient memory usage
-│   │   └── <a href="./src/providers/GalleryUISettingsProvider">GalleryUISettingsProvider</a> # Manages gallery UI settings such as number of columns, image size, gaps, and offscreen rendering distance, persisting user preferences
+│   │   ├── <a href="./src/providers/CachedPhotosProvider">CachedPhotosProvider/</a> # Handles optimized (cached/resized) versions of photos for fast gallery rendering and efficient memory usage
+|   |   ├── <a href="./src/providers/FocusRefProvider">FocusRefProvider/</a> # Stores and provides global references to React Native components, used mostly for focus management
+│   │   ├── <a href="./src/providers/GalleryUISettingsProvider">GalleryUISettingsProvider/</a> # Manages gallery UI settings such as number of columns, image size, gaps, and offscreen rendering distance, persisting user preferences
+│   │   ├── <a href="./src/providers/MediaLibraryPhotosProvider">MediaLibraryPhotosProvider/</a> # Loads and manages access to the device's photo library, including permissions and photo data
+│   │   └── <a href="./src/providers/ScreenDimensionsProvider">ScreenDimensionsProvider/</a> # Provides screen dimensions and scaling information
+│   └── <a href="./src/utils">utils/</a> # Utility functions and helpers
 </pre>
 
-## Running the project
+## Running the project in `developer` mode
 
 1. Check out the episode branch you want to focus on
 2. Install dependencies using `bun install`
 3. **Set up your unique bundle identifier** (required for iOS builds):
    - Copy `.env.example` to `.env`
    - Update `EXPO_BUNDLE_IDENTIFIER` with your unique identifier (e.g., `com.swmansion.photos.<SOME_SUFFIX>`)
-4. Run the project using `bun android`, `bun ios`
-   - This command builds the `Release` version of the app.
+4. Run the project using `bun android`, `bun ios`, `bun tvos`, `bun androidtv` or `bun web`
+   - This command builds the `Release` version of the app on respective platform
+   - Ensure you have the desired platform available on your machine (e.g. tvOS simulator or AndroidTV device)
 5. (Optional) reconfigure the app to launch only the Photos gallery screen by tweaking `EXPO_PUBLIC_LAUNCH_GALLERY_ON_START` env variable.
 6. (Optional) seed the device with images, see [Photos seed](#photos-seed) section
+   - Ensure you have the desired platform available on your machine (either use `Xcode` to install `tvOS` simulator and `Android Studio` to install `AndroidTV` emulator or connect the physical device)
+5. (Optional) seed the device with images, see [Photos seed](#photos-seed) section
+
+> [!NOTE]
+> If you're having problem with seeing the photos that are available on the photo, please restart the app.
+>
+> Also, you can use the ⚙️ button to navigate to settings screen and trigger photos re-reading from the device and cache re-calculation (aka generating a mipmap for every photo).
+
+## Running the project in `production` (aka `release`) mode
+
+1. Use the very similar commands as for `developer`, but with `:release` suffix:
+   - `bun ios:release`
+   - `bun android:release`
+   - `bun tvos:release`
+   - `bun androidtv:release`
+   - `bun web:release`
+
+> [!NOTE]
+> Running release commands will trigger native rebuild automatically, so there's no need to prebuild the native project.
 
 ## Performance measurements
 

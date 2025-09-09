@@ -1,14 +1,16 @@
 import { colors } from "@/config/colors";
 import React from "react";
 import {
-  Pressable,
   StyleProp,
   StyleSheet,
+  TouchableOpacity,
   Text,
   TextStyle,
   View,
   ViewStyle,
 } from "react-native";
+import { scaledPixels } from "@/hooks/useScale";
+import { FONT_MEDIUM, FONT_REGULAR } from "@/config/constants";
 
 type SegmentOption<T extends string | number> = {
   label: string | number;
@@ -40,7 +42,7 @@ export const SegmentedButton = <T extends string | number>({
         const isLast = index === options.length - 1;
 
         return (
-          <Pressable
+          <TouchableOpacity
             key={option.value}
             style={[
               styles.button,
@@ -61,7 +63,7 @@ export const SegmentedButton = <T extends string | number>({
             >
               {option.label}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         );
       })}
     </View>
@@ -73,36 +75,36 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.white,
-    borderRadius: 8,
+    borderRadius: scaledPixels(8),
     overflow: "hidden",
   },
   button: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 8,
+    paddingVertical: scaledPixels(10),
+    paddingHorizontal: scaledPixels(8),
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.white,
-    borderRadius: 8,
+    borderRadius: scaledPixels(8),
   },
   selectedButton: {
     backgroundColor: colors.blue,
   },
   firstButton: {
-    borderTopLeftRadius: 8,
-    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: scaledPixels(8),
+    borderBottomLeftRadius: scaledPixels(8),
   },
   lastButton: {
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
+    borderTopRightRadius: scaledPixels(8),
+    borderBottomRightRadius: scaledPixels(8),
   },
   text: {
-    fontSize: 14,
-    fontFamily: "Aeonik-Regular",
+    fontSize: scaledPixels(14),
+    fontFamily: FONT_REGULAR,
     color: "#333",
   },
   selectedText: {
     color: colors.white,
-    fontFamily: "Aeonik-Medium",
+    fontFamily: FONT_MEDIUM,
   },
 });

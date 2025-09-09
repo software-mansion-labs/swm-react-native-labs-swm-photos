@@ -1,6 +1,6 @@
-import { File } from "expo-file-system/next";
 import { MMKV } from "react-native-mmkv";
 import { MediaLibraryPhoto } from "../MediaLibraryPhotosProvider/useMediaLibraryPhotos";
+import { Platform } from "react-native";
 
 export type CachedPhotoType = {
   originalPhotoUri: string;
@@ -32,9 +32,15 @@ export const getPhotoFromCache = async (
     return;
   }
 
-  const fileInfo = new File(cachedPhotoUri);
-  if (!fileInfo.exists) {
-    return;
+  // Since expo-file-system does not support web, we need to omit this step in case of web build
+  if (Platform.OS !== "web") {
+    // Dynamic import
+    const { File } = await import("expo-file-system/next");
+
+    const fileInfo = new File(cachedPhotoUri);
+    if (!fileInfo.exists) {
+      return;
+    }
   }
 
   return {

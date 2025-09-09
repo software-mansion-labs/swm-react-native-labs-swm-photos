@@ -8,7 +8,7 @@ export default {
     name: "SWM Photos",
     slug: "swm-photos",
     version: "1.0.0",
-    orientation: "portrait",
+    orientation: process.env.EXPO_TV ? "landscape" : "default",
     icon: "./assets/images/icon.png",
     scheme: "swmphotos",
     userInterfaceStyle: "automatic",
@@ -36,7 +36,6 @@ export default {
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
-      "expo-sqlite",
       "expo-router",
       [
         "expo-splash-screen",
@@ -62,9 +61,28 @@ export default {
         },
       ],
       ["./config-plugins/withProfileable"],
+      [
+        "@react-native-tvos/config-tv",
+        {
+          appleTVImages: {
+            icon: "./assets/images/tvos-icon.png",
+            iconSmall: "./assets/images/tvos-iconSmall.png",
+            iconSmall2x: "./assets/images/tvos-iconSmall2x.png",
+            topShelf: "./assets/images/tvos-topShelf.png",
+            topShelf2x: "./assets/images/tvos-topShelf2x.png",
+            topShelfWide: "./assets/images/tvos-topShelfWide.png",
+            topShelfWide2x: "./assets/images/tvos-topShelfWide2x.png",
+          },
+          androidTVIcon: "./assets/images/adaptive-icon.png",
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
+    },
+    extra: {
+      buildType: process.env.BUILD_TYPE,
+      buildId: Date.now().toString(), // Used to detect each new build and clear some caches
     },
   },
 };

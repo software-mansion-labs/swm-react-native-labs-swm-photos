@@ -30,10 +30,13 @@ export function usePersistedState<T>(key: string, initialValue: T) {
       try {
         const persistedValue = storage.getString(key);
 
+        // console.log(`${key}: persisted value: ${persistedValue}`);
+
         if (persistedValue != null) {
           // Try to parse the persisted value
           try {
             const parsedValue = JSON.parse(persistedValue);
+            // console.log(`${key}: parsed value: ${persistedValue}`);
             setState((prev) => ({
               ...prev,
               value: parsedValue,
@@ -106,14 +109,3 @@ const saveToStorage = (key: string, value: any) => {
     logger.main.error(`Failed to persist value for key "${key}":`, error);
   }
 };
-
-// const logPersistedValue = (value: any) => {
-//   if (typeof value === "object") {
-//     return Object.fromEntries(
-//       Object.entries(value).map(([key, value]) => {
-//         return [key, Array.isArray(value) ? `[${value.length} items]` : value];
-//       }),
-//     );
-//   }
-//   return String(value);
-// };

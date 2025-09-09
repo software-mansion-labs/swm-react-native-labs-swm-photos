@@ -22,7 +22,7 @@ const rootLogger = logger.createLogger({
 
 declare global {
   const logger: Record<
-    "main" | "mediaLibrary" | "cachedPhotos" | "performance",
+    "main" | "mediaLibrary" | "cachedPhotos" | "performance" | "filesystem",
     LoggingMethods
   >;
 }
@@ -33,4 +33,5 @@ globalThis.logger = {
   mediaLibrary: rootLogger.extend("mediaLibrary"),
   cachedPhotos: rootLogger.extend("cachedPhotos"),
   performance: rootLogger.extend("performance"),
+  filesystem: rootLogger.extend("filesystem"),
 };

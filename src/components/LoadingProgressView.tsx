@@ -1,6 +1,6 @@
 import { colors } from "@/config/colors";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Label } from "./Label";
 
 export default function LoadingProgressView({
@@ -48,6 +48,7 @@ function useElapsedSeconds({
   const elapsedSecondsIntervalId = useRef<number>(undefined);
   const startElapsedSecondsTimer = useCallback(() => {
     setElapsedSeconds(0);
+    // @ts-expect-error - setInterval returns a number
     elapsedSecondsIntervalId.current = setInterval(() => {
       setElapsedSeconds((prev) => Number(((prev ?? 0) + 0.1).toFixed(1)));
     }, 100);

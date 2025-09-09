@@ -1,4 +1,6 @@
 import { colors } from "@/config/colors";
+import { FONT_BOLD } from "@/config/constants";
+import { scaledPixels } from "@/hooks/useScale";
 import { PropsWithChildren } from "react";
 import { StyleSheet, Text } from "react-native";
 
@@ -12,6 +14,7 @@ const styles = StyleSheet.create({
   text: {
     fontVariant: ["tabular-nums"],
     color: colors.blue,
-    fontFamily: "Aeonik-Bold",
+    fontFamily: FONT_BOLD,
+    fontSize: scaledPixels(16),
   },
 });

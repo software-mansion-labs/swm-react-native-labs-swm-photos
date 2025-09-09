@@ -1,18 +1,20 @@
+import Constants from "expo-constants";
+import { Platform } from "react-native";
+
+// Build constants
+export const BUILD_TYPE: "dev" | "release" =
+  Constants.expoConfig!.extra!.buildType;
+export const BUILD_ID_KEY = "swm_photos_gallery_build_id";
+export const BUILD_ID: string = Constants.expoConfig!.extra!.buildId;
+
 export const SWMANSION_URL = "https://swmansion.com";
 
-/**
- * These are 7 pregenerated blurhashes for our sample photos.
- * We've generated them using: https://blurha.sh/.
- */
-export const PLACEHOLDER_BLURHASHES: string[] = [
-  ":rFGXp~q$%RPRjbIofayV@bHazayogoff5axNHR-t7xaaeV@ayfkWBj[ofaeaeayofofoMbIj]ofoff6WBWBWBayj[oeoff6WAWVWBayofogj[oeoLWBj[j]fQayj[jsjZfk",
-  ":WDvs3EQMxt7NHt6Rkj@_4I]RQofR*oeWCjsXSt8oga~WBfRofj[9bxZozWrocWXj[bGIVn#oza~oLbHj?WVWAV@a{oKaza}jufkskR+V@j=a}oJbHj[s+ofWAWBfljZWWoK",
-  ":wJu7TxaWVt6j[j[jsfk~qofWBf6ayj[ayj[E2aef6WVayj@fkjtE2oLbHofj[f6j[ayNHoLWBf6a}a|ayj[WCj[jsayj[j[juj[j@ayj[j[f6ayj[ayj[WVa|ayfQa}fPj[",
-  ":OHD2C9EM{tRM{t7juWBD4n$WAofjZayj]ayO[%Mf5WVa}axt6WC00Wos.ofjsWBayj[00xZj?bIs:WBWBj[=_9FWBt7WBf6azkCyDfSoLWBWCjsj[j[~W%NNGM{ofjsaya}",
-  ":MNKYT-=xuITM{ogayRi0%9ZNG%MRjWBoft6yER-D%WC%MWAWBWC_ND%xuRjR*t7Rjt79Gxu%MRjRjofj@WB9GofM{t7s:Rjt7Rj9GRjV@jss:j[j[j@WBofoeayaet7ayoL",
-  ":CBghnay00oy^-WTD$s;.5t7NHWmRixv%MM{jwjbtPj@Ria{xbj]%ek9otjvV_R%Rlt7M}WXfinloxV]V]f6jdV]oJbFoeRkWUe=R*off7oMRkWCofaft6k9kBofahRkWCs;",
-  ":YIWJ$oMf8xtxFE3NHxD~UNdoft7oJRjWBoJkXfkt7ofo0WBR+WVWEWXbbofoKWCWVjZR+NbR+W;kCfkoJj@jFayafo0oeofjsj[Rjjsjsn%jZofa}bHRkayoJayWCbHfkfk",
-];
+// Platform-dependable constants
+export const IS_WIDE_SCREEN = (Platform.isTV ||
+  Platform.OS === "web") as boolean;
 
-export const LAUNCH_GALLERY_ON_START =
-  process.env.EXPO_PUBLIC_LAUNCH_GALLERY_ON_START === "true";
+// Other UI constants
+export const FONT_REGULAR =
+  Platform.OS === "web" ? undefined : "Aeonik-Regular";
+export const FONT_MEDIUM = Platform.OS === "web" ? undefined : "Aeonik-Medium";
+export const FONT_BOLD = Platform.OS === "web" ? undefined : "Aeonik-Bold";

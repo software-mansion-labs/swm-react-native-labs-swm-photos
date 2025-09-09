@@ -43,10 +43,16 @@ assets/photos/numbered-photos*
 assets/photos/numbered-photos
 config/images.ts
 
+# Native build directories
 ios/
 android/
 
+# IDE
 .vscode/
 .cursor/
 
+# Other
 .env
+*log*
+package-lock.json
+*notes*
