@@ -3,9 +3,9 @@ import { Platform } from "react-native";
 
 // Build constants
 export const BUILD_TYPE: "dev" | "release" =
-  Constants.expoConfig!.extra!.buildType;
+  Constants.expoConfig?.extra?.buildType ?? "release";
 export const BUILD_ID_KEY = "swm_photos_gallery_build_id";
-export const BUILD_ID: string = Constants.expoConfig!.extra!.buildId;
+export const BUILD_ID: string = Constants.expoConfig?.extra?.buildId ?? "0";
 
 export const SWMANSION_URL = "https://swmansion.com";
 

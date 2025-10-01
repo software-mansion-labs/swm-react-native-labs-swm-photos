@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, use, useMemo } from "react";
+import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 import { CachedPhotoType } from "./cache-service";
 import {
   CachedPhotosLoadingState,
@@ -23,7 +23,7 @@ export const CachedPhotosProvider = ({ children }: PropsWithChildren) => {
     useCachedPhotosData();
 
   return (
-    <CachedPhotosContext
+    <CachedPhotosContext.Provider
       value={useMemo(
         () => ({
           cachedPhotos,
@@ -34,12 +34,12 @@ export const CachedPhotosProvider = ({ children }: PropsWithChildren) => {
       )}
     >
       {children}
-    </CachedPhotosContext>
+    </CachedPhotosContext.Provider>
   );
 };
 
 export const useCachedPhotos = (): CachedPhotosDataType => {
-  const context = use(CachedPhotosContext);
+  const context = useContext(CachedPhotosContext);
 
   if (context === undefined) {
     throw new Error(

@@ -22,7 +22,7 @@ export type FocusBoxProps = {
  *
  * An animated magnifier-like box. Absolutely positioned, requires positioning of parent component.
  */
-export default function FocusBox({
+export function FocusBox({
   focused,
   minSize,
   maxSize,

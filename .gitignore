@@ -10,6 +10,8 @@ web-build/
 expo-env.d.ts
 
 # Native
+ios/
+android/
 .kotlin/
 *.orig.*
 *.jks
@@ -17,6 +19,14 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
+
+# Vega / Kepler
+vega/build/
+assets/photos/vega-sample
+
+# Build side artifacts
+package-lock.json
+buildinfo.json
 
 # Metro
 .metro-health-check*
@@ -31,6 +41,7 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript
@@ -43,16 +54,9 @@ assets/photos/numbered-photos*
 assets/photos/numbered-photos
 config/images.ts
 
-# Native build directories
-ios/
-android/
-
-# IDE
+# IDE directories
 .vscode/
 .cursor/
 
 # Other
-.env
-*log*
-package-lock.json
 *notes*

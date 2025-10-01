@@ -1,5 +1,5 @@
 import { PersistedStateStatus } from "@/hooks/usePersistedState";
-import { createContext, PropsWithChildren, use, useMemo } from "react";
+import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 import {
   MediaLibraryLoadingState,
   MediaLibraryPermissionsStatus,
@@ -34,7 +34,7 @@ export const MediaLibraryPhotosProvider = ({ children }: PropsWithChildren) => {
   } = useMediaLibraryPhotosHook();
 
   return (
-    <MediaLibraryPhotosContext
+    <MediaLibraryPhotosContext.Provider
       value={useMemo(
         () => ({
           mediaLibraryPermissionsStatus,
@@ -55,12 +55,12 @@ export const MediaLibraryPhotosProvider = ({ children }: PropsWithChildren) => {
       )}
     >
       {children}
-    </MediaLibraryPhotosContext>
+    </MediaLibraryPhotosContext.Provider>
   );
 };
 
 export const useMediaLibraryPhotos = (): MediaLibraryPhotosDataType => {
-  const context = use(MediaLibraryPhotosContext);
+  const context = useContext(MediaLibraryPhotosContext);
 
   if (context === undefined) {
     throw new Error(

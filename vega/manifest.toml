@@ -1,0 +1,15 @@
+schema-version = 1
+
+[package]
+title = "SWM Photos Gallery app for Vega"
+version = "1.0.0"
+id = "com.swmansion.photos"
+icon = "@image/vega-icon.png"
+
+
+[components]
+[[components.interactive]]
+id = "com.swmansion.photos.main"
+runtime-module = "/com.amazon.kepler.keplerscript.runtime.loader_2@IKeplerScript_2_0"
+launch-type = "singleton"
+categories = ["com.amazon.category.main"]

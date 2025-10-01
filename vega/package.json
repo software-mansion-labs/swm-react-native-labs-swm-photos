@@ -1,0 +1,71 @@
+{
+  "name": "images-gallery",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "bun": ">=1.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf build node_modules buildinfo.json dist bvm build"
+  },
+  "dependencies": {
+    "@amzn/expo-asset": "~2.0.0",
+    "@amzn/expo-constants": "~2.0.0",
+    "@amzn/expo-file-system": "~2.0.0",
+    "@amzn/expo-font": "~2.0.0",
+    "@amzn/expo-image": "~2.0.0",
+    "@amzn/expo-image-manipulator": "~2.0.0",
+    "@amzn/expo-splash-screen": "~2.0.0",
+    "@amzn/keplerscript-turbomodule-api": "^1.0.0",
+    "@amzn/react-native-kepler": "~2.0.0",
+    "@amzn/react-native-mmkv": "~1.0.0",
+    "@amzn/react-native-reanimated": "~2.0.0",
+    "@amzn/react-native-safe-area-context": "~2.0.0",
+    "@amzn/react-native-screens": "~2.0.0",
+    "@amzn/react-native-svg": "~2.0.0",
+    "@amzn/react-navigation__core": "~7.0.0",
+    "@amzn/react-navigation__native": "~7.0.0",
+    "@amzn/react-navigation__stack": "~7.0.0",
+    "@amzn/shopify__flash-list": "~2.0.0",
+    "expo": "~50.0.0",
+    "react": "18.2.0",
+    "react-native": "0.72.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@amzn/kepler-cli-platform": "^0",
+    "@react-native-community/cli": "11.3.2",
+    "@react-native/eslint-config": "0.72.2",
+    "@react-native/metro-config": "^0.72.6",
+    "@testing-library/react-native": "^7.2.0",
+    "@tsconfig/react-native": "^3.0.2",
+    "@types/jest": "^28.0.0",
+    "@types/react": "^18.0.24",
+    "@types/react-test-renderer": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "babel-jest": "^28.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "eslint": "^8.12.0",
+    "jest": "^28.0.0",
+    "metro-react-native-babel-preset": "^0.76.5",
+    "mustache": "^4.2.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.2",
+    "react-test-renderer": "18.2.0",
+    "ts-jest": "^28.0.0",
+    "typescript": "4.8.4"
+  },
+  "npm-pretty-much": {
+    "runRelease": "always"
+  },
+  "kepler": {
+    "projectType": "application",
+    "appName": "SWMPhotos",
+    "targets": [
+      "tv"
+    ]
+  }
+}

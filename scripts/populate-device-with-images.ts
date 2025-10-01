@@ -40,44 +40,8 @@ type IosSimulatorsJson = {
   >;
 };
 
-/**
- * Query the system for available iOS simulators
- */
-async function getAvailableIosSimulators(): Promise<
-  {
-    name: string;
-    udid: string;
-    state: string;
-    runtime: string;
-  }[]
-> {
-  const output = await exec("xcrun simctl list --json");
-  const data = JSON.parse(output.stdout) as IosSimulatorsJson;
-  const result: {
-    name: string;
-    udid: string;
-    state: string;
-    runtime: string;
-  }[] = [];
-
-  for (const [runtime, devices] of Object.entries(data.devices)) {
-    for (const device of devices) {
-      if (device.isAvailable) {
-        result.push({
-          name: device.name,
-          udid: device.udid,
-          state: device.state,
-          runtime,
-        });
-      }
-    }
-  }
-  return result;
-}
-
 // Device types
-
-type DeviceType = "ios" | "android";
+type DeviceType = "ios" | "android" | "kepler";
 type Device = {
   type: DeviceType;
   name: string;
@@ -218,6 +182,41 @@ async function pushImagesToAndroid(device: Device, images: string[]) {
 }
 
 /**
+ * Query the system for available iOS simulators
+ */
+async function getAvailableIosSimulators(): Promise<
+  {
+    name: string;
+    udid: string;
+    state: string;
+    runtime: string;
+  }[]
+> {
+  const output = await exec("xcrun simctl list --json");
+  const data = JSON.parse(output.stdout) as IosSimulatorsJson;
+  const result: {
+    name: string;
+    udid: string;
+    state: string;
+    runtime: string;
+  }[] = [];
+
+  for (const [runtime, devices] of Object.entries(data.devices)) {
+    for (const device of devices) {
+      if (device.isAvailable) {
+        result.push({
+          name: device.name,
+          udid: device.udid,
+          state: device.state,
+          runtime,
+        });
+      }
+    }
+  }
+  return result;
+}
+
+/**
  * List connected physical iOS devices using devicectl
  */
 async function getConnectedPhysicalIosDevices(): Promise<Device[]> {
@@ -282,6 +281,84 @@ async function getConnectedPhysicalIosDevices(): Promise<Device[]> {
 }
 
 /**
+ * Query the system for available Kepler devices (both physical & emulators)
+ */
+async function getConnectedKeplerDevices(): Promise<Device[]> {
+  try {
+    const { stdout } = await exec("kepler device list");
+    const lines = stdout.split("\n").slice(1).filter(Boolean);
+
+    const pattern1 = /^(.+?)\s*:\s*(.+)$/;  // For physical devices
+    const pattern2 = /^(.+?)\s*:\s*(.+?)\s*-\s*(.+?)\s*-\s*(.+)$/;  // For emulators
+
+    return lines
+      .map((line) => {
+        const isEmu = pattern2.test(line);
+        const vals = isEmu ? line.match(pattern2) : line.match(pattern1);
+        const [, name, archOrId, os, serial] = vals!;
+        return {
+          type: "kepler",
+          name,
+          id: isEmu ? serial : archOrId,
+          state: "active",
+          isEmulator: isEmu,
+        };
+      });
+  } catch {
+    return [];
+  }
+}
+
+// NOTE: This part of the script does not really work for now :)
+async function pushImagesToKepler(device: Device, images: string[]) {
+  console.log(
+    `📱 Pushing ${images.length} images to Vega device '${device.name}'...`,
+  );
+
+  // Create a directory on the device for the images
+  // - Vega comes with a special directory /data for persistent app data
+  const deviceDir = "data/photos";
+
+  const {stdout} = await exec(`kepler device run-cmd --device ${device.name} --command 'ls /data'`);
+  console.log(stdout);
+
+  const checkDir = await exec(`kepler device run-cmd --device ${device.name} --command 'cd data && ls photos'`).catch(() => null);
+
+  if (!checkDir)
+    await exec(`kepler device run-cmd --device ${device.name} --command 'cd data && mkdir photos'`);
+
+  // Create progress bar for batch processing
+  const progressBar = createProgressBar("📦 Pushing to Vega", images.length);
+
+  // Push images in batches of 20
+  const BATCH_SIZE = 20;
+
+  for (let i = 0; i < images.length; i += BATCH_SIZE) {
+    const batch = images.slice(i, i + BATCH_SIZE);
+
+    await Promise.all(
+      batch.map(async (imagePath) => {
+        const fileName = imagePath.split("/").pop();
+        console.log(fileName)
+        await exec(
+          `kepler device copy-to --device ${device.name} --source ${imagePath} --destination '${deviceDir}/${fileName}'`,
+        );
+      }),
+    );
+
+    progressBar.update(i + BATCH_SIZE);
+  }
+
+  progressBar.stop();
+
+  console.log(`✅ Images pushed to ${deviceDir} on Vega ${device.name}`);
+
+  // TODO: add some sort of a trigger for refreshing the app
+  // - For now a simple restart should work
+}
+
+
+/**
  * Unified device selection for iOS and Android
  */
 async function selectDeviceUnified(): Promise<Device> {
@@ -289,6 +366,7 @@ async function selectDeviceUnified(): Promise<Device> {
   const androidDevices = await getConnectedAndroidDevices();
   const androidEmulators = await getAvailableAndroidEmulators();
   const physicalIosDevices = await getConnectedPhysicalIosDevices();
+  const keplerDevices = await getConnectedKeplerDevices();
   const allDevices: Device[] = [
     ...iosSims.map((sim) => ({
       type: "ios" as const,
@@ -301,6 +379,7 @@ async function selectDeviceUnified(): Promise<Device> {
     ...androidDevices,
     ...androidEmulators,
     ...physicalIosDevices,
+    ...keplerDevices,
   ];
   if (allDevices.length === 0) {
     throw new Error("No available devices found.");
@@ -807,6 +886,8 @@ async function main() {
       await pushImagesToPhysicalIos(selected, numberedImages);
     } else if (selected.type === "android") {
       await pushImagesToAndroid(selected, numberedImages);
+    } else if (selected.type === "kepler") {
+      await pushImagesToKepler(selected, numberedImages);
     }
 
     const totalDuration = Date.now() - totalStartTime;

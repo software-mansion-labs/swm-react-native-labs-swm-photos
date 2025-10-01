@@ -85,4 +85,6 @@ export default {
       buildId: Date.now().toString(), // Used to detect each new build and clear some caches
     },
   },
+  name: "com.swmansion.photos.main",
+  displayName: "SWM Photos"
 };

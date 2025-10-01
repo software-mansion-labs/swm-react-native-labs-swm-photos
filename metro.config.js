@@ -7,6 +7,11 @@ const config = getDefaultConfig(__dirname);
 // Add wasm asset support
 config.resolver.assetExts.push("wasm");
 
+// Explicitely ignore all files from /workflows
+config.resolver.blacklistRE = [
+  /vega\/.*/
+];
+
 if (process.env.EXPO_TV) {
   config.resolver.sourceExts = [
     ...(config.resolver.sourceExts || []).map((ext) => `tv.${ext}`),

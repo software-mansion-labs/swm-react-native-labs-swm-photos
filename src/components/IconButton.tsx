@@ -5,11 +5,12 @@ import {
   Platform,
   StyleSheet,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from "react-native";
 import { Image } from "expo-image";
 import { scaledPixels } from "@/hooks/useScale";
-import { useState } from "react";
+import React, { useState } from "react";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -25,7 +26,6 @@ export type IconButtonProps = {
   animate?: boolean;
   style?: ViewStyle;
   iconStyle?: ImageStyle;
-  ref?: any;
 };
 
 /**
@@ -33,15 +33,16 @@ export type IconButtonProps = {
  *
  * Creates a button-like icon based on TouchableOpacity component.
  * The button can be additionally animated (scaling on focus) when specyfing animate={true}.
+ * 
+ * We use forwardRef to allow passing the references to the button inner container
  */
-export function IconButton({
+export const IconButton = React.forwardRef<View, IconButtonProps>(function IconButton({
   onPress,
   iconSource,
   animate,
   style,
   iconStyle,
-  ref,
-}: IconButtonProps) {
+}: IconButtonProps, ref: React.ForwardedRef<View>) {
   // Component state
   const [isFocused, setIsFocused] = useState(false);
   const scale = useSharedValue(1);
@@ -49,7 +50,7 @@ export function IconButton({
   // Component state handlers
   const handleFocus = () => {
     setIsFocused(true);
-    if (animate) scale.value = withSpring(1.1, { stiffness: 300, damping: 10 });
+    if (animate) scale.value = withSpring(1.25, { stiffness: 300, damping: 10 });
   };
 
   const handleBlur = () => {
@@ -82,7 +83,6 @@ export function IconButton({
     <Animated.View style={animatedStyle}>
       <TouchableOpacity
         ref={ref}
-        focusable
         onPress={onPress}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -95,7 +95,7 @@ export function IconButton({
       </TouchableOpacity>
     </Animated.View>
   );
-}
+});
 
 // Styles
 const styles = StyleSheet.create({

@@ -2,4 +2,5 @@
 // since ImageComponent proxy is a recommended way to use images
 export { ImageComponent } from "./ImageComponent";
 export { FocusableImage } from "./FocusableImage";
+export { SvgImage } from "./SvgImage"
 export { ImageViewProps } from "./types";

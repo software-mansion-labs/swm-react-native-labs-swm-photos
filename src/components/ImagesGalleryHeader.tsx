@@ -4,10 +4,10 @@ import { scaledPixels } from "@/hooks/useScale";
 import { useCachedPhotos, Cache } from "@/providers/CachedPhotosProvider";
 import { useGalleryUISettings } from "@/providers/GalleryUISettingsProvider";
 import { useScreenDimensions } from "@/providers/ScreenDimensionsProvider/ScreenDimensionsProvider";
-import { Link } from "expo-router";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { Loader, LoaderPlaceholder } from "./Loader";
 import { IconButton } from "./IconButton";
+import { NavigationLink } from "./navigation/NavigationLink";
 import { useFocusRefs } from "@/providers/FocusRefProvider";
 
 /**
@@ -37,7 +37,6 @@ export const ImagesGalleryHeader = ({
   const screen = useScreenDimensions();
   const focusRefs = useFocusRefs();
 
-  // Dependencies - photos cache state (for number of loaded items in subtitle text) & gallery settings
   const { cachedPhotos, cachedPhotosLoadingState } = useCachedPhotos();
   const { galleryGap } = useGalleryUISettings();
 
@@ -59,19 +58,18 @@ export const ImagesGalleryHeader = ({
     }),
   };
 
-  // Wide screen version - for both TV & web
   if (IS_WIDE_SCREEN) {
     return (
       <View style={headerStyle}>
         <View style={styles.headerBarWideScreen}>
           <Text style={styles.headerTextWideScreen}>SWM Photos</Text>
-          <Link href="/settings" asChild>
+          <NavigationLink href="/settings" >
             <IconButton
               iconSource={require("@/assets/images/settings-icon.png")}
               animate={Platform.isTV}
               ref={focusRefs["settings"]}
             />
-          </Link>
+          </NavigationLink>
         </View>
         {Cache.isCompleted(cachedPhotosLoadingState) && (
           <Text style={styles.headerSubtitleWideScreen}>{subtitleText}</Text>
@@ -91,13 +89,13 @@ export const ImagesGalleryHeader = ({
       ) : (
         <LoaderPlaceholder />
       )}
-      <Link href="/settings" asChild>
+      <NavigationLink href="/settings">
         <IconButton
           iconSource={require("@/assets/images/settings-icon.png")}
           style={styles.settingsButtonMobile}
           iconStyle={styles.settingsButtonIconMobile}
         />
-      </Link>
+      </NavigationLink>
     </View>
   );
 };

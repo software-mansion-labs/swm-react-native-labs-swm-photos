@@ -13,7 +13,7 @@ import { useGalleryUISettings } from "@/providers/GalleryUISettingsProvider";
 import { useMediaLibraryPhotos } from "@/providers/MediaLibraryPhotosProvider";
 import { usePerformanceLogs } from "@/utils/logPerformance";
 import { useTimersData } from "@/utils/useMeasureImageLoadTime";
-import { useNavigation } from "expo-router";
+import { useNavigation } from "@/components/navigation/NavigationStack";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -132,15 +132,6 @@ export default function SettingsLayout() {
         )}
 
         <SWMLogo />
-
-        {Platform.isTV && (
-          <Button
-            style={styles.closeButton}
-            onPress={() => navigation.goBack()}
-          >
-            Close
-          </Button>
-        )}
       </ScrollView>
     </SafeAreaView>
   );

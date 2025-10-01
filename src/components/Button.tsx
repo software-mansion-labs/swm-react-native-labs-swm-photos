@@ -37,7 +37,6 @@ const AnimatedPressable = Animated.createAnimatedComponent(TouchableOpacity);
 /**
  * Button component
  */
-
 export const Button = ({
   style,
   children,

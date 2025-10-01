@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 import { ImageViewProps } from "./types";
 import { ImageComponent } from "./ImageComponent";
-import FocusBox from "../FocusBox";
+import { FocusBox } from "../FocusBox";
 
 /**
  * FocusableImage component

@@ -10,6 +10,8 @@
       "@/*": [
         "./src/*"
       ],
+      "@amzn/react-navigation__native": ["./vega/node_modules/@amzn/react-navigation__native"],
+      "@amzn/react-navigation__stack": ["./vega/node_modules/@amzn/react-navigation__stack"]
     }
   },
   "include": [

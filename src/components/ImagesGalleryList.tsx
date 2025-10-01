@@ -9,7 +9,7 @@ import { FocusableImage } from "./image/FocusableImage";
 import { ImageComponent } from "./image/ImageComponent";
 import { NoPhotosMessage } from "./NoPhotosMessage";
 import { EmptyGalleryList } from "./EmptyGalleryList";
-import { SplashScreen } from "expo-router";
+import * as SplashScreen from 'expo-splash-screen'
 import { FlashList } from "@shopify/flash-list";
 import { scaledPixels } from "@/hooks/useScale";
 import { getHandle, useFocusRefs } from "@/providers/FocusRefProvider";
@@ -184,7 +184,7 @@ export const ImagesGalleryList = ({
         drawDistance={properties.listOffscreenDrawDistance}
         ItemSeparatorComponent={ItemSeparator}
         ListEmptyComponent={ListEmptyComponent}
-        onLoad={handleLoad}
+        onLoad={handleLoad} 
         showsVerticalScrollIndicator={false}
         CellRendererComponent={(props) => {
           const { style, children, ...rest } = props;
