@@ -52,7 +52,9 @@ export const useMediaLibraryPhotos = () => {
   const loadMediaLibraryPhotos = useCallback(async () => {
     await logPerformance(async () => {
       try {
-        logger.mediaLibrary.info("🛫 Starting reading bundled photos from /pkg/assets/photo/numbered-photos ...");
+        logger.mediaLibrary.info(
+          "🛫 Starting reading bundled photos from /pkg/assets/photo/numbered-photos ...",
+        );
 
         const PHOTOS_DIR = "/pkg/assets/photos"; // Mounted assets directory provided by Kepler runtime
         const ALLOWED_EXT = ["jpg", "jpeg", "png", "webp"];
@@ -66,9 +68,12 @@ export const useMediaLibraryPhotos = () => {
         // Read directory (may throw if not present)
         let entries: string[] = [];
         try {
-            entries = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
+          entries = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
-          logger.mediaLibrary.warn(`⚠️ Photos directory ${PHOTOS_DIR} not found, treating as empty.`);
+          logger.mediaLibrary.warn(
+            `⚠️ Photos directory ${PHOTOS_DIR} not found, treating as empty.`,
+          );
           setState((prev) => ({
             ...prev,
             mediaLibraryPhotos: [],
@@ -79,14 +84,14 @@ export const useMediaLibraryPhotos = () => {
         }
 
         // Filter and gather file info for sorting
-        const filtered = entries.filter(name => {
-          const ext = name.split('.').pop()?.toLowerCase();
+        const filtered = entries.filter((name) => {
+          const ext = name.split(".").pop()?.toLowerCase();
           return !!ext && ALLOWED_EXT.includes(ext);
         });
 
         // Since Kepler build already copies and shuffles files, sorting by modification date does not make much sense
         // TOOD: change in the future after fixing populate-device-with-images script
-        const files = filtered.map(name => `${PHOTOS_DIR}/${name}`);
+        const files = filtered.map((name) => `${PHOTOS_DIR}/${name}`);
         files.sort((a, b) => {
           const nameA = a.split("/").pop()?.toLowerCase() ?? "";
           const nameB = b.split("/").pop()?.toLowerCase() ?? "";
@@ -98,8 +103,13 @@ export const useMediaLibraryPhotos = () => {
         const total = Math.min(files.length, MEDIA_LIBRARY_PHOTOS_LIMIT);
 
         if (total === state.mediaLibraryPhotosCount) {
-          logger.mediaLibrary.info(`✅ Bundled photos count (${total}) unchanged, skipping reload.`);
-          setState((prev)=> ({...prev, mediaLibraryLoadingState: "COMPLETED"}));
+          logger.mediaLibrary.info(
+            `✅ Bundled photos count (${total}) unchanged, skipping reload.`,
+          );
+          setState((prev) => ({
+            ...prev,
+            mediaLibraryLoadingState: "COMPLETED",
+          }));
           return;
         }
 
@@ -110,18 +120,27 @@ export const useMediaLibraryPhotos = () => {
           mediaLibraryLoadingState: "LOADING",
         });
 
-        logger.mediaLibrary.info(`🔄 Bundled photos count: ${total}, batches: ${Math.ceil(total / LOAD_BATCH_SIZE)}`);
+        logger.mediaLibrary.info(
+          `🔄 Bundled photos count: ${total}, batches: ${Math.ceil(total / LOAD_BATCH_SIZE)}`,
+        );
 
         for (let i = 0; i < total; i += LOAD_BATCH_SIZE) {
-          const slice = files.slice(i, i + LOAD_BATCH_SIZE).map(f => ({ uri: `file://${f}` }));
+          const slice = files
+            .slice(i, i + LOAD_BATCH_SIZE)
+            .map((f) => ({ uri: `file://${f}` }));
           setState((prev) => ({
             ...prev,
             mediaLibraryPhotos: [...prev.mediaLibraryPhotos, ...slice],
           }));
         }
 
-        logger.mediaLibrary.info(`✅ Reading bundled photos completed (photos count: ${total})`);
-        setState((prev)=> ({...prev, mediaLibraryLoadingState: "COMPLETED"}));
+        logger.mediaLibrary.info(
+          `✅ Reading bundled photos completed (photos count: ${total})`,
+        );
+        setState((prev) => ({
+          ...prev,
+          mediaLibraryLoadingState: "COMPLETED",
+        }));
       } catch (e) {
         logger.mediaLibrary.error("❌ Error while reading MediaLibrary", e);
         setState((prev) => ({

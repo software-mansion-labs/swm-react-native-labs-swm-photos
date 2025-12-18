@@ -7,7 +7,10 @@ import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 import pLimit from "p-limit";
 import { PixelRatio } from "react-native";
 
-export const calculateNewCachePhoto = async (photoUri: string, mipmapWidth: number) => {
+export const calculateNewCachePhoto = async (
+  photoUri: string,
+  mipmapWidth: number,
+) => {
   return cacheCalculationLimiter(async () => {
     const pixelWidth = PixelRatio.getPixelSizeForLayoutSize(mipmapWidth);
     const result = await manipulateAsync(

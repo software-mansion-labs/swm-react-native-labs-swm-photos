@@ -1,5 +1,5 @@
 import { colors } from "@/config/colors";
-import { Image } from "expo-image";
+import { Image as ExpoImage } from "expo-image";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { scaledPixels } from "@/hooks/useScale";
@@ -7,7 +7,7 @@ import { scaledPixels } from "@/hooks/useScale";
 export function Logo() {
   return (
     <View style={styles.logoContainer}>
-      <Image
+      <ExpoImage
         source={require("@/assets/images/adaptive-icon.png")}
         style={styles.logo}
         contentFit="contain"

@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { Image as ExpoImage } from "expo-image";
 import { PlaceholderProps } from "./types";
 import { StyleSheet, View } from "react-native";
 import { colors } from "@/config/colors";
@@ -23,7 +23,7 @@ export const PlaceholderStaticImage = ({ size, index }: PlaceholderProps) => {
         styles.container,
       ]}
     >
-      <Image
+      <ExpoImage
         source={require("@/assets/images/adaptive-icon.png")}
         style={{ width: size / 2, height: size / 2, borderRadius: 100 }}
       />

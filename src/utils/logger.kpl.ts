@@ -6,10 +6,18 @@ type LoggingMethods = {
 };
 
 const createSimpleLogger = (prefix: string): LoggingMethods => ({
-  debug: (...args: unknown[]) => console.log(`[USER-DEBUG][${prefix}]`, ...args),
-  info: (...args: unknown[]) => console.log(`[USER-INFO][${prefix}]`, ...args),
-  warn: (...args: unknown[]) => console.log(`[USER-WARN][${prefix}]`, ...args),
-  error: (...args: unknown[]) => console.log(`[USER-ERROR][${prefix}]`, ...args),
+  debug: (...args: unknown[]) =>
+    // eslint-disable-next-line no-console
+    console.log(`[USER-DEBUG][${prefix}]`, ...args),
+  info: (...args: unknown[]) =>
+    // eslint-disable-next-line no-console
+    console.log(`[USER-INFO][${prefix}]`, ...args),
+  warn: (...args: unknown[]) =>
+    // eslint-disable-next-line no-console
+    console.log(`[USER-WARN][${prefix}]`, ...args),
+  error: (...args: unknown[]) =>
+    // eslint-disable-next-line no-console
+    console.log(`[USER-ERROR][${prefix}]`, ...args),
 });
 
 // @ts-expect-error assigning new global variable

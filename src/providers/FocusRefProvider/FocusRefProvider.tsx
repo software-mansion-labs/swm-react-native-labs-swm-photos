@@ -17,7 +17,7 @@ export const FocusRefContext = createContext<FocusRefsContextType | null>(null);
 
 /**
  * Focus references provider
- * 
+ *
  * TODO: Use different method of focus management
  */
 export const FocusRefProvider = ({ children }: PropsWithChildren) => {

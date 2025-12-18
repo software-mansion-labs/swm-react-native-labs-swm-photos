@@ -19,7 +19,7 @@ export const ImagesGalleryContainer = ({
   subtitle,
 }: PropsWithChildren & ImagesGalleryHeaderProps) => {
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}> 
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View
         style={[
           styles.imageContainer,

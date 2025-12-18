@@ -20,6 +20,7 @@ const config = {
     disableHierarchicalLookup: true,
     sourceExts: [
       ...(defaultConfig.resolver.sourceExts || []).map((ext) => `kpl.${ext}`),
+      ...(defaultConfig.resolver.sourceExts || []).map((ext) => `tv.${ext}`),
       ...(defaultConfig.resolver.sourceExts || []),
     ],
   },

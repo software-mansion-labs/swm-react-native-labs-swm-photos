@@ -6,13 +6,6 @@
 // - Set to Infinity if you want to disable it
 export const MEDIA_LIBRARY_PHOTOS_LIMIT = Infinity;
 
-// ------------------
-// UI config - images
-// ------------------
-
-// Decides whether to use image native components from expo-image or react-native-image
-export const IMAGE_NATIVE_PRESET: "expo" | "rni" = "expo";
-
 // ----------------------
 // UI config - UI scaling
 // ----------------------

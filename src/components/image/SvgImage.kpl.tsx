@@ -7,7 +7,7 @@ import * as FileSystem from "expo-file-system";
  * Helper definitions - SVG image props type
  */
 export type SvgImageProps = {
-  source: any;    
+  source: any;
   width: number;
   height: number;
   style?: ImageStyle;
@@ -15,13 +15,13 @@ export type SvgImageProps = {
 
 /**
  * **SvgImage component**
- * 
+ *
  * For Vega, displaying .svg image with expo-image is not supported, so replacement is required.
  * In this case we read a .svg file as string and pass it to SvgXml component.
- * 
+ *
  * @param source Relative, Vega sandbox path to given .svg image, eg. /pkg/assets/svg/swmansion-logo.svg
  */
-export const SvgImage = ({source, width, height, style}: SvgImageProps) => {
+export const SvgImage = ({ source, width, height, style }: SvgImageProps) => {
   const [svg, setSvg] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -31,8 +31,8 @@ export const SvgImage = ({source, width, height, style}: SvgImageProps) => {
 
     if (!source || typeof source !== "string") {
       setSvg(null);
-			setLoading(false);
-			return;
+      setLoading(false);
+      return;
     }
 
     // An async wrapper
@@ -52,17 +52,9 @@ export const SvgImage = ({source, width, height, style}: SvgImageProps) => {
     };
 
     loadSvgContent(source);
-  }, [source])
+  }, [source]);
 
-  if (loading)
-    return null;
+  if (loading) return null;
 
-  return (
-    <SvgXml 
-      xml={svg} 
-      width={width} 
-      height={height} 
-      style={style} 
-    />
-  );
-}
+  return <SvgXml xml={svg} width={width} height={height} style={style} />;
+};

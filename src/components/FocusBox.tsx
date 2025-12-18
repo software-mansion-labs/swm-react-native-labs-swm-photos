@@ -22,12 +22,7 @@ export type FocusBoxProps = {
  *
  * An animated magnifier-like box. Absolutely positioned, requires positioning of parent component.
  */
-export function FocusBox({
-  focused,
-  minSize,
-  maxSize,
-  style,
-}: FocusBoxProps) {
+export function FocusBox({ focused, minSize, maxSize, style }: FocusBoxProps) {
   // Animation state - shared value
   const offset = useSharedValue<number>(0);
 

@@ -10,7 +10,8 @@ const exec = promisify(_exec);
 const stat = promisify(_stat);
 
 // Paths
-const PHOTOS_PATH = resolve(__dirname, "../assets/photos");
+const SIMPLE_DATASET_PATH = resolve(__dirname, "../assets/photos/dataset/simple");
+const EXTENDED_DATASET_PATH = resolve(__dirname, "../assets/photos/dataset/extended")
 const NUMBERED_PHOTOS_PATH = resolve(
   __dirname,
   "../assets/photos/numbered-photos",
@@ -399,6 +400,34 @@ async function selectDeviceUnified(): Promise<Device> {
 }
 
 /**
+ * Photo dataset selection prompt
+ * 
+ * @returns a path to selected dataset
+ */
+async function selectPhotosDataset(): Promise<string> {
+  const { selectedPath } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "selectedPath",
+      message: "Select image dataset:",
+      choices: [
+        {
+          name: "Simple dataset (repeated, numbered photos)",
+          value: SIMPLE_DATASET_PATH
+        },
+        {
+          name: "Extended dataset (unique photos)",
+          value: EXTENDED_DATASET_PATH
+        }
+      ],
+    }
+  ]);
+
+  return selectedPath;
+}
+
+
+/**
  * Prompt the user for how many copies of each image they want
  */
 async function getNumberOfCopies(): Promise<number> {
@@ -429,10 +458,10 @@ type Simulator = {
   runtime: string;
 };
 
-function getPhotoFiles(): string[] {
-  return readdirSync(PHOTOS_PATH)
+function getPhotoFiles(photosPath: string): string[] {
+  return readdirSync(photosPath)
     .filter((file) => file.match(/\.(jpg|jpeg|png)$/i))
-    .map((file) => join(PHOTOS_PATH, file));
+    .map((file) => join(photosPath, file));
 }
 
 async function ensureSimulatorBooted(sim: Simulator) {
@@ -727,13 +756,13 @@ async function addImagesToSimulator(sim: Simulator, images: string[]) {
 /**
  * Push images to physical iOS device using AirDrop
  */
-async function pushImagesToPhysicalIos(device: Device, images: string[]) {
+async function pushImagesToPhysicalIos(device: Device, images: string[], path: string, basename: string) {
   if (images.length === 0) {
     throw new Error("No images found in assets/photos.");
   }
 
-  const zipFilename = `${NUMBERED_PHOTOS_BASENAME}-${images.length}.zip`;
-  const zipPath = resolve(NUMBERED_PHOTOS_PATH, "..", zipFilename);
+  const zipFilename = `${basename}-${images.length}.zip`;
+  const zipPath = resolve(path, "..", zipFilename);
 
   // 1. Prepare a zip archive with all the numbered files inside
   if (!(await exists(zipPath))) {
@@ -745,7 +774,7 @@ async function pushImagesToPhysicalIos(device: Device, images: string[]) {
 
     // Execute zip command with progress tracking
     const zipProcess = _exec(
-      `cd "${NUMBERED_PHOTOS_PATH}" && zip -r "${zipPath}" .`,
+      `cd "${path}" && zip -r "${zipPath}" .`,
       {
         maxBuffer: 1024 * 1024 * 10,
       },
@@ -844,7 +873,11 @@ async function main() {
     }
 
     const selected = await selectDeviceUnified();
-    const originalImages = getPhotoFiles();
+
+    // Ask user to select photos dataset
+    const selectedPath = await selectPhotosDataset();
+
+    const originalImages = getPhotoFiles(selectedPath);
 
     if (originalImages.length === 0) {
       throw new Error("No images found in assets/photos.");
@@ -864,13 +897,19 @@ async function main() {
 
     console.log(`📸 Found ${originalImages.length} original images`);
 
-    const copies = await getNumberOfCopies();
+    let images = originalImages;
 
-    console.log(
-      `🔄 Creating ${copies} numbered copies of each image (${originalImages.length * copies} total images)`,
-    );
+    // Multiply each image given amount of times
+    // - Skip this process in case of the extended dataset
+    if (selectedPath === SIMPLE_DATASET_PATH) {
+      const copies = await getNumberOfCopies();
 
-    const numberedImages = await createNumberedImages(originalImages, copies);
+      console.log(
+        `🔄 Creating ${copies} numbered copies of each image (${originalImages.length * copies} total images)`,
+      );
+
+      images = await createNumberedImages(originalImages, copies);
+    }
 
     if (selected.type === "ios" && selected.isEmulator) {
       await addImagesToSimulator(
@@ -880,14 +919,19 @@ async function main() {
           state: selected.state!,
           runtime: selected.runtime!,
         },
-        numberedImages,
+        images,
       );
     } else if (selected.type === "ios" && !selected.isEmulator) {
-      await pushImagesToPhysicalIos(selected, numberedImages);
+      await pushImagesToPhysicalIos(
+        selected, 
+        images, 
+        selectedPath === SIMPLE_DATASET_PATH ? NUMBERED_PHOTOS_PATH : selectedPath,
+        selectedPath === SIMPLE_DATASET_PATH ? NUMBERED_PHOTOS_BASENAME : "photos"
+      );
     } else if (selected.type === "android") {
-      await pushImagesToAndroid(selected, numberedImages);
+      await pushImagesToAndroid(selected, images);
     } else if (selected.type === "kepler") {
-      await pushImagesToKepler(selected, numberedImages);
+      await pushImagesToKepler(selected, images);
     }
 
     const totalDuration = Date.now() - totalStartTime;

@@ -17,6 +17,22 @@ export function diagonal(res: Resolution) {
 const resolution = Dimensions.get("window") as Resolution;
 
 /**
+ * Helper definitions - screen points
+ */
+
+export type Point = { x: number; y: number };
+
+// Helper function - check whether a point fits in the screen
+export function fitsIn(point: Point, resolution: Resolution) {
+  return (
+    point.x >= 0 &&
+    point.x < resolution.width &&
+    point.y >= 0 &&
+    point.y <= resolution.height
+  );
+}
+
+/**
  * Helper definitions - design presets
  */
 

@@ -9,12 +9,12 @@ import { colors } from "@/config/colors";
 import { BUILD_TYPE } from "@/config/constants";
 import { scaledPixels } from "@/hooks/useScale";
 import { useCachedPhotos } from "@/providers/CachedPhotosProvider";
+import { useFilteredPhotos } from "@/providers/FilteredPhotosProvider";
 import { useGalleryUISettings } from "@/providers/GalleryUISettingsProvider";
 import { useMediaLibraryPhotos } from "@/providers/MediaLibraryPhotosProvider";
 import { usePerformanceLogs } from "@/utils/logPerformance";
 import { useTimersData } from "@/utils/useMeasureImageLoadTime";
-import { useNavigation } from "@/components/navigation/NavigationStack";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingsLayout() {
@@ -38,11 +38,14 @@ export default function SettingsLayout() {
   } = useMediaLibraryPhotos();
   const { cachedPhotos, cachedPhotosLoadingState, recalculateCachedPhotos } =
     useCachedPhotos();
+  const {
+    embeddingProgress,
+    filteredPhotosLoadingState,
+    clearPhotosEmbeddings,
+  } = useFilteredPhotos();
 
   const { resetTimers, timersData } = useTimersData();
   const { resetLogs, performanceLogs } = usePerformanceLogs();
-
-  const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -86,6 +89,16 @@ export default function SettingsLayout() {
           </Button>
         </View>
 
+        <LoadingProgressView
+          total={mediaLibraryPhotosCount ?? 0}
+          current={embeddingProgress}
+          label={filteredPhotosLoadingState}
+        />
+        <Button onPress={() => clearPhotosEmbeddings()}>
+          Recalculate photos embeddings{"\n"}
+          (delete the whole embedding cache)
+        </Button>
+
         {BUILD_TYPE === "dev" && (
           <>
             <View style={styles.optionsContainer}>
@@ -112,6 +125,18 @@ export default function SettingsLayout() {
                 value={offscreenDrawDistanceWindowSize}
                 onChange={setOffscreenDrawDistanceWindowSize}
               />
+            </View>
+
+            <View style={styles.optionsContainer}>
+              <LoadingProgressView
+                total={mediaLibraryPhotosCount ?? 0}
+                current={embeddingProgress}
+                label={filteredPhotosLoadingState}
+              />
+              <Button onPress={() => clearPhotosEmbeddings()}>
+                Recalculate photos embeddings {"\n"}(delete the whole embedding
+                cache)
+              </Button>
             </View>
 
             <View style={styles.optionsContainer}>

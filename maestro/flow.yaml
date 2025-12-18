@@ -1,0 +1,29 @@
+appId: com.imagesgallery
+---
+- launchApp:
+    clearState: false
+- assertNotVisible:
+    id: "loader"
+- tapOn:
+    text: "randomTextThatDoesNotExist"
+    optional: true
+    repeat: 5
+    delay: 1000
+- waitForAnimationToEnd
+- tapOn:
+    id: "test-flashlist"
+- assertVisible: "Your photos"
+- waitForAnimationToEnd
+- scroll
+- waitForAnimationToEnd
+- swipe:
+    start: 50%, 80%
+    end: 50%, 30%
+    duration: 30
+- waitForAnimationToEnd
+- swipe:
+    start: 50%, 30%
+    end: 50%, 80%
+    duration: 30
+- waitForAnimationToEnd
+- back

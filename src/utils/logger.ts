@@ -15,6 +15,7 @@ const rootLogger = logger.createLogger({
       main: "default",
       mediaLibrary: "blueBright",
       cachedPhotos: "greenBright",
+      filteredPhotos: "cyanBright",
       performance: "magentaBright",
     },
   },
@@ -22,7 +23,7 @@ const rootLogger = logger.createLogger({
 
 declare global {
   const logger: Record<
-    "main" | "mediaLibrary" | "cachedPhotos" | "performance" | "filesystem",
+    "main" | "mediaLibrary" | "cachedPhotos" | "filteredPhotos" | "performance" | "filesystem",
     LoggingMethods
   >;
 }
@@ -32,6 +33,7 @@ globalThis.logger = {
   main: rootLogger.extend("main"),
   mediaLibrary: rootLogger.extend("mediaLibrary"),
   cachedPhotos: rootLogger.extend("cachedPhotos"),
+  filteredPhotos: rootLogger.extend("filteredPhotos"),
   performance: rootLogger.extend("performance"),
   filesystem: rootLogger.extend("filesystem"),
 };

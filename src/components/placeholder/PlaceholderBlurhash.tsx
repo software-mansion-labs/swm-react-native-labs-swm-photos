@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { Image as ExpoImage } from "expo-image";
 import { PlaceholderProps } from "./types";
 
 /**
@@ -18,7 +18,7 @@ const PLACEHOLDER_BLURHASHES: string[] = [
 // PlaceholderBlurhash component
 export const PlaceholderBlurhash = ({ size, index }: PlaceholderProps) => {
   return (
-    <Image
+    <ExpoImage
       source={{
         blurhash: PLACEHOLDER_BLURHASHES[index % PLACEHOLDER_BLURHASHES.length],
       }}

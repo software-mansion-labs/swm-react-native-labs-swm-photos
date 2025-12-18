@@ -4,10 +4,11 @@ import { Linking, Platform, TouchableOpacity } from "react-native";
 import { scaledPixels } from "@/hooks/useScale";
 import { SvgImage } from "./image/SvgImage";
 
-//@ts-ignore
-const SWM_LOGO_SOURCE = Platform.OS === "kepler" ? 
-  "/pkg/assets/svg/swmansion-logo.svg" :
-  require("@/assets/svg/swmansion-logo.svg");
+const SWM_LOGO_SOURCE =
+  //@ts-ignore
+  Platform.OS === "kepler"
+    ? "/pkg/assets/svg/swmansion-logo.svg"
+    : require("@/assets/svg/swmansion-logo.svg");
 
 export function SWMLogo() {
   return (

@@ -52,6 +52,8 @@ app-example
 # generated images
 assets/photos/numbered-photos*
 assets/photos/numbered-photos
+assets/photos/dataset/extended/**
+!assets/photos/dataset/extended/.gitkeep
 config/images.ts
 
 # IDE directories

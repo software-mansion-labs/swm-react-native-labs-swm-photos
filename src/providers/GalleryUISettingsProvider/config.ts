@@ -36,9 +36,11 @@ export const INITIAL_GALLERY_SETTINGS = {
   numberOfColumns: availableColumnCountsPortrait[3],
 
   // On TVs, scrolling the gallery with remote contoller is generally slower compared to mobile devices
-  offscreenDrawDistanceWindowSize: 
+  offscreenDrawDistanceWindowSize:
     //@ts-ignore
-    Platform.OS === "kepler" ? availableOffscreenDrawDistanceWindowSizes[3] :
-    Platform.isTV ?            availableOffscreenDrawDistanceWindowSizes[4] :
-                               availableOffscreenDrawDistanceWindowSizes[5]
+    Platform.OS === "kepler"
+      ? availableOffscreenDrawDistanceWindowSizes[3]
+      : Platform.isTV
+        ? availableOffscreenDrawDistanceWindowSizes[4]
+        : availableOffscreenDrawDistanceWindowSizes[5],
 };

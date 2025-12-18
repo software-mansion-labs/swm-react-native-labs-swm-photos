@@ -4,7 +4,7 @@ import { Logo } from "@/components/Logo";
 import { scaledPixels } from "@/hooks/useScale";
 import { useMediaLibraryPhotos } from "@/providers/MediaLibraryPhotosProvider/MediaLibraryPhotosProvider.web";
 import { useScreenDimensions } from "@/providers/ScreenDimensionsProvider";
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ImagesGalleryList } from "@/components/ImagesGalleryList";
@@ -23,12 +23,12 @@ export default function PhotosGalleryLayout() {
   /**
    * Handlers - directory selection with filesystem api & webkit
    */
-  const handleDirectorySelect = useCallback(() => {
+  const handleDirectorySelect = () => {
     // Use File System Access API as a default, unless we are sure it's not available
     if (api === "filesystem" && "showDirectoryPicker" in window)
       handleFilesystemDirectorySelect();
     else handleWebkitDirectorySelect();
-  }, [api]);
+  };
 
   // Opens directory picker window
   const handleFilesystemDirectorySelect = async () => {
@@ -88,6 +88,7 @@ export default function PhotosGalleryLayout() {
   return (
     <ImagesGalleryContainer title="Your photos">
       <ImagesGalleryList
+        name="photos_gallery_list"
         dimensions={dimensions}
         numberOfColumns={numberOfColumns}
         galleryGap={galleryGap}
